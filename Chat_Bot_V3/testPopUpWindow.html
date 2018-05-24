@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name='viewport' content="width=device-width,initial-scale=1, maximum-scale=1" user-scalable="no">
+        <title>Test</title>
+        <script src="jquery-3.2.1.js"></script>
+        <script src="popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+        <!-- Bootstrap theme -->
+        <link href="https://getbootstrap.com/docs/3.3/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+        <!-- Font Awesome CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        
+        <link rel="alternate" type="application/atom+xml" title="Primer fomulario" hred="/feed/" />
+        <link rel="search" type="application/opensearchdescription+xml" href="opensearch.xml"/>
+        <link rel="shortcut icon" href="/favicon.ico"/>
+
+
+        <script>
+            function closeSession(){
+                document.getElementById("testchat").innerHTML='';
+                alert("Sesión terminada");
+            }
+        </script>
+
+    </head>
+
+<header>
+    Header blablabla
+    <hr/>
+</header>
+<body>
+    Body nblablablabla
+    <div class="row">
+        <div class="col-md-2"><img src="gladosavatar.jpg"/></div>
+        <div class="col-md-2"><img src="chellavatar.jpg"/></div>
+    </div>
+    <hr/>
+    <div id="testchat">
+        <div><label id="mes1">Yo: Hola</label></div>
+        <div><label id="mes2">Bot: Buenos días</label></div>
+        <div><label id="mes3">Yo: Adiós</label></div>
+        <div><label id="mes4">Bot: Hasta luego</label></div>
+    </div>
+    <hr/>
+    <br/>
+    <input type="button" onclick="closeSession()"/>
+</body>
+<footer>
+    Footer blablablabla
+</footer>

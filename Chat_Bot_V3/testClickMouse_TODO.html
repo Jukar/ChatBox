@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name='viewport' content="width=device-width,initial-scale=1, maximum-scale=1" user-scalable="no">
+        <title>Test</title>
+        <script src="jquery-3.2.1.js"></script>
+        <script src="popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+        <!-- Bootstrap theme -->
+        <link href="https://getbootstrap.com/docs/3.3/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+        <!-- Font Awesome CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <!--<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">-->
+        
+        <link rel="alternate" type="application/atom+xml" title="Primer fomulario" hred="/feed/" />
+        <link rel="search" type="application/opensearchdescription+xml" href="opensearch.xml"/>
+        <link rel="shortcut icon" href="icons/favicon.ico"/>
+
+
+        <script>
+            var repeater = 500;
+
+            var tId = null;
+
+            function mouseOnMicro(){
+                tId = setTimeout(mouseOnMicro,repeater);
+                document.getElementById("checker").value="Escuchando.";
+            }
+
+            function mouseOutMicro(){
+                clearTimeout (tId);
+                tId=null;
+                document.getElementById("checker").value="Sin escucha.";
+            }
+
+        </script>
+
+    </head>
+
+<header>
+    Header blablabla
+    <hr/>
+</header>
+<body>
+    Body nblablablabla
+    <br/>
+    <button id="voiceButton" type="button" ontouchstart="mouseOnMicro();" ontouchend="mouseOutMicro();"/>Click para hablar</button>
+    <br/>
+    <input id="checker" type="text" disabled value="Sin escucha"/>
+</body>
+<footer>
+    Footer blablablabla
+</footer>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name='viewport' content="width=device-width,initial-scale=1, maximum-scale=1" user-scalable="no">
+        <title>Test</title>
+        <script src="jquery-3.2.1.js"></script>
+        <script src="popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+        <!-- Bootstrap theme -->
+        <link href="https://getbootstrap.com/docs/3.3/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+        <!-- Font Awesome CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <!--<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">-->
+        
+        <link rel="alternate" type="application/atom+xml" title="Primer fomulario" hred="/feed/" />
+        <link rel="search" type="application/opensearchdescription+xml" href="opensearch.xml"/>
+        <link rel="shortcut icon" href="icons/favicon.ico"/>
+
+
+        <script>
+
+            window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+            window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+            window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
+            if (!window.indexedDB){ window.alert("Your browser doesn't support a stable version of IndexedDB."); }
+
+            const messageData = [
+                {id: "01", textFile: "¿Hola?", voiceFile: "sounds/hello1.wav"}
+                //,{id: "02", textFile: "¡Cuánto tiempo! ¿Qué tal te ha ido todo?", voiceFile: "sounds/hello2.wav"}
+            ];
+
+            var db;
+            var request = window.indexedDB.open("newDatabase",1);
+            var myTable;
+
+            request.onerror = function(event){console.log("error: ");};
+            request.onsuccess = function(event){
+                db = request.result;
+                console.log("success: "+db);
+            };
+            request.onupgradeneeded = function(event){
+                var db = event.target.result;
+
+                myTable = db.createObjectStore("message",{keyPath: "id"});
+                for(var i in messageData){
+                    myTable.add(messageData[i]);
+                    console.log(messageData[i]);
+                }
+            }
+
+            function add() {
+                var request = db.transaction(["message"], "readwrite")
+                    .objectStore("message")
+                    .add({ id: "01", textFile: "¿Hola?", voiceFile: "sounds/hello1.wav" });
+                request.onsuccess = function(event) {
+                    console.log("Objeto añadido.");
+                };
+                request.onerror = function(event) {
+                    alert("No se ha añadido, ya existe... ");
+                }
+            }
+
+            function read(){
+                var transaction = db.transaction(["message"]);
+                var myTable = transaction.myTable("message");
+                var request = myTable.get("00-03");
+
+                request.onerror = function(event){
+                    alert("No se encuentra la DB");
+                };
+                request.onsuccess = function(event){
+                    if(request.result){
+                        document.getElementById("checker").value=request.result.textFile;
+                        document.getElementById("checker2").value=request.result.voiceFile;
+                    }
+                    else{
+                        alert("No es posible leer!");
+                    }
+                };
+                
+            }               
+
+        </script>
+
+    </head>
+
+<header>
+    Header blablabla
+    <hr/>
+</header>
+<body>
+    Body nblablablabla
+    <br/>
+    <button id="voiceButton" type="button" ontouchstart="callDB();" onmousedown="callDB()"/>Click para hablar</button>
+    <br/>
+    <label>Texto: </label> 
+    <input id="checker" type="text" disabled value="-------"/>
+    <label>Archivo: </label> 
+    <input id="checker2" type="text" disabled value="-------"/>
+</body>
+<footer>
+    Footer blablablabla
+</footer>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name='viewport' content="width=device-width,initial-scale=1, maximum-scale=1" user-scalable="no">
+        <title>ChatBox 2.0</title>
+        <script src="jquery-3.2.1.js"></script>
+        <script src="popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+        <link href="https://getbootstrap.com/docs/3.3/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="alternate" type="application/atom+xml" title="Primer fomulario" hred="/feed/" />
+        <link rel="search" type="application/opensearchdescription+xml" href="opensearch.xml"/>
+        <link rel="shortcut icon" href="icons/favicon.ico"/>
+
+        <script>
+
+            var nombreUsuario = "";
+            var edadUsuario = "";
+            var sexoUsuario = "";
+            var avatarUsuario = "";
+            var colorUsuario = "#8b9dc3";
+            var colorBot = "#3b5998";
+
+
+            //Introducción de los datos del formulario en las variables del programa
+            function introduceUsuario(){
+                nombreUsuario = document.getElementById("nombreInicio").value;
+                edadUsuario = document.getElementById("edadInicio").value;
+                sexoUsuario = document.getElementById("sexoInicio").value;
+                avatarUsuario = document.getElementById("selectedAvatarPreview").src;
+                var ventana = document.getElementById('ventanaInicio');
+
+                if(edadUsuario!=""){
+                    console.log("Me vale");
+                }
+                else{
+                    console.log("No me vale "+document.getElementById("edadInicio").value);
+                    edadUsuario = "N/A";
+                }
+
+                if(nombreUsuario!=""){
+                    document.getElementById('labelUserName').innerHTML = "<strong>"+nombreUsuario+"</strong>";
+                    document.getElementById('labelUserAge').innerHTML = "<strong>Edad: </strong>"+edadUsuario;
+                    document.getElementById('labelUserGender').innerHTML = "<strong>Sexo: </strong>"+sexoUsuario;
+                    document.getElementById('userAvatar').src=avatarUsuario;
+                    ventana.style.visibility = 'hidden';
+                }else{
+                    alert("Introduce tu nombre.");
+                }
+
+            }
+
+            //Cierra la sesión y reestablece las variables del programa
+            function closeSession(){
+                userColor = "#8b9dc3";
+                document.getElementById("newUserColor").value="#8b9dc3";
+                document.getElementById("nombreInicio").value="";
+                document.getElementById("edadInicio").value="";
+                document.getElementById("optionOtro").selected=true;
+                document.getElementById("optionNone").selected=true;
+                alert("Sesión terminada");
+                location.reload();
+            }
+
+
+            //Muestra la barra de emoticonos tras pulsar el botón
+            function despliegaEmoticonos(){
+                var chatEmojis = document.getElementById('chatemojis');
+                if(chatEmojis.style.visibility == 'hidden'){
+                    chatEmojis.style.visibility = 'visible';
+                }
+                else{
+                    chatEmojis.style.visibility = 'hidden';
+                }
+            }
+
+            //Muestra la pantalla de grabación de voz tras pulsar el botón
+            function grabaVoz(){
+                var recordVoice = document.getElementById('recordVoice');
+                var chatemojis = document.getElementById('chatemojis');
+
+                var totalAltura = document.getElementById("chatHeader").offsetHeight + document.getElementById("chatRowContainer").offsetHeight;
+                
+                console.log(totalAltura);
+
+                recordVoice.style.visibility = 'visible';
+                recordVoice.style.height = totalAltura+"px";
+
+                if(chatemojis.style.visibility === 'visible'){
+                    chatemojis.style.visibility = 'hidden';
+                }  
+            }
+
+            //Oculta la pantalla de grabación de voz tras soltar el botón
+            function vuelveChat(){
+                document.getElementById('recordVoice').style.visibility = 'hidden';
+            }
+
+            //Añade el texto del usuario, y la respuesta del bot, a la ventana del chat
+            function addTexto(){
+                var introText = document.getElementById('text').value;
+                var changeLine1 = document.createElement('br');
+                var changeLine2 = document.createElement('br');
+
+                //El div que contiene el mensaje del usuario
+                var chatMessage = document.getElementById('chatBox');
+                var newMessage = document.createElement('div');
+                newMessage.style.textAlign = "left";
+                newMessage.style.maxWidth = "90%";
+                chatMessage.appendChild(newMessage);
+
+                //El label del mensaje
+                var label1 = document.createElement('label');
+                label1.style.backgroundColor = colorUsuario;
+                label1.style.fontFamily = "FontAwesome";
+                //label1.style.color = colorUsuario;
+                label1.innerHTML ="<span style='font-weight:bold; background-color:'colorUsuario';'>"+nombreUsuario + ": </span>" + introText;
+                
+                //El div que contiene la respuesta del bot
+                var newResponse =document.createElement('div');
+                newResponse.style.backgroundColor = colorBot; 
+                newResponse.style.textAlign = "right";
+                newResponse.style.maxWidth = "90%";
+                chatMessage.appendChild(newResponse);
+
+                //El label de la respuesta
+                var label2 = document.createElement('label');
+                //label2.style.backgroundColor = "green";
+                if(introText == "Hola" || introText == "hola"){              
+                    label2.innerHTML = "<span style='font-weight:bold;'>Bot: </span>"+ saludoGenerica() ;
+                    document.getElementById('text').value="";
+                }else if(introText =="qué tal" || introText =="Qué tal"||introText=="que tal"||introText=="Que tal"){
+                    label2.innerHTML = "<span style='font-weight:bold;'>Bot: </span>"+ estadoGenerica();
+                    document.getElementById('text').value="";
+                }else if(introText == "Adiós" || introText=="Adios"||introText=="adiós"||introText=="adios"){
+                    label2.innerHTML = "<span style='font-weight:bold;'>Bot: </span>"+ despedidaGenerica();
+                    document.getElementById('text').value="";
+                }
+                else{
+                    label2.innerHTML = "<span style='font-weight:bold;'>Bot: </span>"+ respuestaGenerica();
+                    document.getElementById('text').value="";
+                }
+
+                //Añadido del mensaje y su respuesta al chat
+                newMessage.appendChild(changeLine1);
+                newMessage.appendChild(label1);  
+                newMessage.appendChild(changeLine2);
+
+                newResponse.appendChild(label2);
+                //newResponse.appendChild(changeLine2);
+            }
+
+            //Añade una foto del usuario, y la respuesta del bot, a la ventana del chat
+            function addImage(e){
+                var reader = new FileReader();
+                reader.onload = function(e){
+                    var changeLine0 = document.createElement('br');
+                    var changeLine1 = document.createElement('br');
+                    var changeLine2 = document.createElement('br');
+
+                    //El div que contiene el mensaje del usuario
+                    var chatMessage = document.getElementById('chatBox');
+                    var newMessage1 = document.createElement('div');
+                    newMessage1.style.textAlign = "left";
+                    newMessage1.style.maxWidth = "90%";
+                    chatMessage.appendChild(newMessage1);
+
+                    //El label del mensaje
+                    var label1 = document.createElement('label');
+                    label1.style.backgroundColor = colorUsuario;
+                    label1.style.fontFamily = "FontAwesome";
+                    //label1.style.color = colorUsuario;
+                    //label1.style.font = "FontAwesome";
+                    label1.innerHTML ="<span style='font-weight:bold;'>"+nombreUsuario + "</span> ha enviado:";
+
+                    //El div que contiene la imagen del usuario
+                    var newMessage2 = document.createElement('div');
+                    newMessage2.style.textAlign = "left";
+                    newMessage2.style.maxWidth = "90%";
+                    chatMessage.appendChild(newMessage2);
+
+                    //El label del mensaje
+                    var userImage = document.createElement('img');
+                    userImage.style.maxWidth = "150px";
+                    userImage.style.backgroundColor = colorUsuario; 
+                    userImage.src = e.target.result;
+                    
+                    //El div que contiene la respuesta del bot
+                    var newResponse =document.createElement('div');
+                    //newResponse.style.backgroundColor = "green";
+                    newResponse.style.textAlign = "right";
+                    newResponse.style.maxWidth = "90%";
+                    chatMessage.appendChild(newResponse);
+
+                    //El label de la respuesta
+                    var availableResponses = [
+                        "¡Oh, gracias!"
+                    ];
+                    var availableSounds = [
+                        new Audio("sounds/thanks1.wav")
+                    ];
+                    var chosenValue = Math.floor(Math.random() * availableResponses.length);
+                    var label = document.createElement('label');
+                    label.style.backgroundColor = colorBot;
+                    label.innerHTML = "<span style='font-weight:bold;'>Bot: </span>"+availableResponses[chosenValue] ;
+                    availableSounds[chosenValue].play();
+                    
+                    //Añadido del mensaje y su respuesta al chat
+                    newMessage1.appendChild(changeLine0);
+                    newMessage1.appendChild(label1);  
+                    newMessage2.appendChild(changeLine1);
+                    
+                    newMessage2.appendChild(userImage);  
+                    newMessage2.appendChild(changeLine2);
+
+                    newResponse.appendChild(label);
+                }
+                reader.readAsDataURL(e.files[0]);
+                e.value = "";
+            }
+
+            //Genera un saludo por parte del bot
+            function saludoGenerica(){
+                var availableResponses = [
+                    "¿Hola?",
+                    "¡Cuánto tiempo! ¿Qué tal te ha ido todo?"
+                    ];
+                var availableSounds = [
+                    new Audio("sounds/hello1.wav"),
+                    new Audio("sounds/hello2.wav")
+                ];
+                var chosenValue = Math.floor(Math.random() * availableResponses.length);
+                availableSounds[chosenValue].play();
+                return availableResponses[chosenValue];
+            }
+
+            //Genera un estado por parte del bot
+            function estadoGenerica(){
+                var availableResponses = [
+                    //"¿Cómo te está yendo todo?",
+                    //"Estaremos perfectamente.",
+                    //"En marcha, os lo contaré de camino.",
+                    "Bien.",
+                    "Bien."
+                ];
+                var availableSounds = [
+                    //new Audio("sounds/status1.wav"),
+                    //new Audio("sounds/status2.wav"),
+                    //new Audio("sounds/status3.wav"),
+                    new Audio("sounds/status4.wav"),
+                    new Audio("sounds/status5.wav")
+                ];
+                var chosenValue = Math.floor(Math.random() * availableResponses.length);
+                availableSounds[chosenValue].play();
+                return availableResponses[chosenValue];
+            }
+
+            //Genera una despedida por parte del bot
+            function despedidaGenerica(){
+                var availableResponses = [
+                    "Adiós",
+                    "¿Es que no lo hemos pasado bien?",
+                    "Se acabó la charla."
+                ];
+                var availableSounds = [
+                    new Audio("sounds/bye1.wav"),
+                    new Audio("sounds/bye2.wav"),
+                    new Audio("sounds/bye3.wav")
+                ];
+                var chosenValue = Math.floor(Math.random() * availableResponses.length);
+                availableSounds[chosenValue].play();
+                return availableResponses[chosenValue];
+            }
+
+            //Genera una respuesta genérica por parte del bot
+            function respuestaGenerica(){
+                var availableResponses = [
+                    //"Por su propia seguridad y la del resto, procure no tocar...*bzzzz",
+                    //"Así. ¡Muy bien!",
+                    //"Es usted muy eficiente",
+                    //"Reitero mis felicitaciones",
+                    "Tenga cuidado.",
+                    //"¡Increíble! usted, <Insertar nombre del sujeto> debe ser famosa en <Insertar ciudad del sujeto>",
+                    //"No intente superarla",
+                    //"Si se rinde se le servirá un trozo de tarta.",
+                    //"¿Dónde está?",
+                    //"Sé que estás ahí, puedo sentirte.",
+                    "¿Qué estás haciendo?",
+                    "Me parece que no vas bien.",
+                    //"Si lo piensas bien, esto es la risa.",
+                    "¿Qué ha sido eso? ¿Has dicho algo?",
+                    "Oye espera un momento, eso no me lo esperaba.",
+                    "Piénsalo, si fuese algo importante ¿por qué no sé nada?",
+                    ];
+                var availableSounds = [
+                    //new Audio("sounds/generic1.wav"),
+                    //new Audio("sounds/generic2.wav"),
+                    //new Audio("sounds/generic3.wav"),
+                    //new Audio("sounds/generic4.wav"),
+                    new Audio("sounds/generic5.wav"),
+                    //new Audio("sounds/generic6.wav"),
+                    //new Audio("sounds/generic7.wav"),
+                    //new Audio("sounds/generic8.wav"),
+                    //new Audio("sounds/generic9.wav"),
+                    //new Audio("sounds/generic10.wav"),
+                    new Audio("sounds/generic11.wav"),
+                    new Audio("sounds/generic12.wav"),
+                    //new Audio("sounds/generic13.wav"),
+                    new Audio("sounds/generic14.wav"),
+                    new Audio("sounds/generic15.wav"),
+                    new Audio("sounds/generic16.wav"),
+                ];
+                var chosenValue = Math.floor(Math.random() * availableResponses.length);
+                availableSounds[chosenValue].play();
+                return availableResponses[chosenValue];
+            }
+
+            //Permite simular el envío de un mensaje al pulsar ENTER
+            function checkEnterPress(event){
+                if(event.keyCode == 13){
+                    addTexto();
+                }
+            }
+
+            //Previene la recarga de la aplicación al pulsar ENTER
+            function preventCloseSession(){
+                return false;
+            }
+
+            //Permite simular un click sobre el input que esconde el botón
+            function imageButton(){
+                document.getElementById("inputImages").click();
+            }
+
+            //Modifica la variable colorUsuario
+            function changeUserColor(newColor){
+                colorUsuario=newColor.value;
+            }
+
+            //Añade un emoticono al input de texto
+            function addEmoji(emojiCode){
+                var textToAdd = document.getElementById("text");
+                textToAdd.value = textToAdd.value + emojiCode;
+            }
+
+            //Permite maximizar o minimizar el chat
+            function changeSize(){
+                var chat = document.getElementById("chat");
+
+                if(chat.style.width == "100%"){
+                    document.getElementById("chat").style.width = "80%";
+                }
+                else if(chat.style.width == "80%"){
+                    document.getElementById("chat").style.width = "100%";
+                }
+            }
+
+            //Permite cambiar la imagen del avatar en el formulario de entrada de datos
+            function changeAvatarPreview(e){
+                var imagePreview = document.getElementById("selectedAvatarPreview");
+                if(e.value==0){
+                    imagePreview.src="noAvatar.png";
+                }
+                if(e.value==1){
+                    imagePreview.src="gordonavatar.jpg";
+                }
+                else if(e.value==2){
+                    imagePreview.src="chellavatar.jpg";
+                }
+            }
+
+            //Comprueba el valor de la edad del formulario de entrada de datos
+            function checkEdad(evt){
+                var charCode = (evt.which) ? evt.which : event.keyCode
+                if (charCode > 31 && (charCode < 48 || charCode > 57))
+                    return false;
+                return true;
+            }
+
+	    
+        </script>
+
+    </head>
+
+    <body id="chatbackground" class="container-fluid" style="background-color: #f7f7f7;">
+                        
+        <article id="chat" style="text-align: center; width:100%; position:relative; transform: translate(0%,5%);">
+            
+            <header id="chatHeader" class="row" style="background-color: #3b5998;">
+                <div class="col-8 col-md-8">
+                    <h2>ChatBox 3.0</h2>
+                </div>
+                <div class="col-4 col-md-4" style="text-align: right;">
+                    <button type="button" onclick="changeSize()" class="btn btn-primary" style="cursor: pointer;"><i class="fa fa-arrows-alt" aria-hidden="true"></i></button>
+                    <button type="button" onclick="closeSession()" class="btn btn-primary" style="cursor: pointer;"><i class="fa fa-window-close" aria-hidden="true"></i></button>
+                </div>
+            </header>
+
+            <body id="chatBody" class="container-fuid">
+                <div id="chatRowContainer" class="row" style="height:80vh; position:relative;">
+                    <div class="col-3 col-md-3" style="background-color:#8b9dc3;">
+                        <img id="userAvatar" src="gordonAvatar.jpg" style="margin-right: auto; max-width: 100%;"/>
+                        <br/>
+                        <label id="labelUserName">Usuario</label>
+                        <br/>
+                        <label id="labelUserAge">26</label>
+                        <br/>
+                        <label id="labelUserGender">H</label>
+                        <br/>
+                        <input type="color" id="newUserColor" value="#8b9dc3" onchange="changeUserColor(this)"></color>
+                    </div>
+
+                    <div id="chatBox" class="col-6 col-md-6" style="overflow-y: auto;">
+                    </div>
+
+                    <div class="col-3 col-md-3" style="background-color:#8b9dc3;">
+                        <img src="gladosavatar.jpg" style="margin-right: auto; max-width: 100%;"/>
+                        <br/>
+                        <label>BOT</label>
+                    </div>
+                </div>
+
+                <div id="recordVoice" class="row text-center" style="width:110%; height:100%; visibility: hidden; position:absolute; top:0%; left:-5%; z-index:10; background-color: rgba(0,0,0,0.8);">
+                    <div style="width: 50px; height: 10px; background: white; border: 3px rgba(255,255,255,0.8); position: relative; left: 50%; top: 50%; transform: translate(-50%,-50%)">
+                        <div class="circleBase type1" style="width: 40px; height: 50px; background: rgba(255,255,255,0.8); border: 3px solid none; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%; position: absolute; left: 0%; top: 0%; transform:translate(12%,-110%);"></div>
+                        <div class="circleBase type1" style="width: 35px; height: 50px; background: rgba(0,0,0,0.8);; border: 3px solid none; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%; position: absolute; left: 0%; top: 0%; transform:translate(21%,-112%);"></div>
+                        <div class="circleBase type1" style="width: 30px; height: 30px; background: rgba(255,255,255,0.8); border: 3px rgba(255,255,255,0.8); border-top-left-radius: 50%; border-top-right-radius: 50%; position: absolute; left: 0%; top: 0%; transform:translate(33%,-250%);"></div>
+                        <div class="circleBase type1" style="width: 30px; height: 30px; background: rgba(255,255,255,0.8); border: 3px rgba(255,255,255,0.8); border-bottom-left-radius: 50%; border-bottom-right-radius: 50%; position:absolute; top: 0%; left:0%; transform:translate(33%,-150%)"></div>
+                    </div>
+                </div>
+
+                <div id="chatemojis" class="row" style="height:20%; visibility: hidden; position:absolute; bottom:6%; left:0%;z-index:10;">
+                    <div style="border:solid; background-color:white;">
+                        <button style="border: none; background-color: white" type="button" onclick="addEmoji('&#xf118')" class="btn btn-secondary"><i class="fa fa-smile-o" style="font-size:20px;color:black;" aria-hidden="true"></i></button>
+                        <button style="border: none; background-color: white" type="button" onclick="addEmoji('&#xf119')" class="btn btn-secondary"><i class="fa fa-frown-o" style="font-size:20px;color:black;" aria-hidden="true"></i></button>
+                        <button style="border: none; background-color: white" type="button" onclick="addEmoji('&#xf11a')" class="btn btn-secondary"><i class="fa fa-meh-o" style="font-size:20px;color:black;" aria-hidden="true"></i></button>
+                        <button style="border: none; background-color: white" type="button" onclick="addEmoji('&#xf0a6')" class="btn btn-secondary"><i class="fa hand-o-up" style="font-size:20px;color:black;" aria-hidden="true"></i></button>                
+                        <button style="border: none; background-color: white" type="button" onclick="addEmoji('&#xf2b5')" class="btn btn-secondary"><i class="fa handshake-o" style="font-size:20px;color:black;" aria-hidden="true"></i></button>
+                        <button style="border: none; background-color: white" type="button" onclick="addEmoji('&#xf087')" class="btn btn-secondary"><i class="fa-thumbs-o-up" style="font-size:20px;color:black;" aria-hidden="true"></i></button>
+                        <button style="border: none; background-color: white" type="button" onclick="addEmoji('&#xf17a')" class="btn btn-secondary"><i class="fa-windows" style="font-size:20px;color:black;" aria-hidden="true"></i></button>
+                        <button style="border: none; background-color: white" type="button" onclick="addEmoji('&#xf1d0')" class="btn btn-secondary"><i class="fa-ra" style="font-size:20px;color:black;" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+
+
+                <!-- Ventana de inicio para introducir usuario INICIO-->
+
+                <div id="ventanaInicio" style="text-align: center; width:110%; height:100%; position:absolute; top:0%; left:0%; z-index:10; background-color: #3b5998;">
+                    
+                    <div id="ventanainicioHeader" class="row" style="background-color: #3b5998;">
+                        <div class="col-8 col-md-8">
+                            <h2>ChatBox 3.0</h2>
+                        </div>
+                        <div class="col-4 col-md-4" style="text-align: right;">
+                            
+                        </div>
+                    </div>
+                    <div id="ventanainicioForm" class="row" style="height: 90%; background-color:#8b9dc3;">
+                        <label></label><br/><br/>
+                        <div class="col-11 col-md-10" style="background-color:#8b9dc3;margin-right: 0;">
+                            <label>Nombre:</label>
+                            <br/>
+                            <input id="nombreInicio" pattern="[0-9][a-z][A-Z]{1-6}" maxlength="6" type="text" size="7"></input>
+                            <br/>
+                            <label>Edad:</label>
+                            <br/>
+                            <input id="edadInicio" maxlength="2" type="text" size="2" onkeypress="return checkEdad(event)"></input>
+                            <br/>
+                            <label>Sexo:</label> 
+                            <br/>
+                            <select id="sexoInicio">
+                                <option id="optionOtro" value="?">Otro</option>
+                                <option id="optionHombre" value="H">Hombre</option>
+                                <option id="optionMujer" value="M">Mujer</option>
+                            </select>
+                            <br/>
+                            <label>Escoge un avatar:</label>
+                            <br/>
+                            <select id="selectAvatar" onchange="changeAvatarPreview(this)">
+                                <option id="optionNone" value="0">None</option>
+                                <option id="optionGordon" value="1">Gordon</option>
+                                <option id="optionChell" value="2">Chell</option>
+                            </select>  
+                            <br/>
+                            <img id="selectedAvatarPreview" style="border:solid; max-width:150px" src="noAvatar.png"/>
+                            <hr/>
+                            <button onclick="introduceUsuario()" style="margin-right: auto; margin-left: auto; max-height: 50px;">Entrar</button>
+                        </div>
+
+                        
+                    </div>
+
+                    <div class="row" style="background-color: #3b5998;">
+                    </div>
+
+                </div>
+
+                <!-- Ventana de inicio para introducir usuario FIN-->
+
+            </body>
+
+
+            <footer id="chatFooter" class="row" style="background-color: #3b5998;">
+                <div class="col-5 col-md-3">
+                    <button id="iconoEmojis" type="button" class="btn btn-primary" onclick="despliegaEmoticonos()" style="cursor: pointer;"><i class="fa fa-smile-o" aria-hidden="true"></i></button>
+                    <button id="iconoVoice" type="button"  class="btn btn-primary" ontouchstart="grabaVoz()" ontouchend="vuelveChat()" onmousedown="grabaVoz()" onmouseup="vuelveChat()" style="cursor: pointer;"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+                    <!-- Este input estará escondido, y funcionará a través del botón que aparece a continuación. -->
+                    <input id="inputImages" type="file" onchange="addImage(this)" accept="image/*" style="display:none;">
+                    <button id="iconoImages" type="button" class="btn btn-primary" onclick="imageButton()" style="cursor: pointer;"><i class="fa fa-file-image-o" aria-hidden="true"></i></button>
+                </div>
+
+                <div class="col-7 col-md-9">
+                    <div class="input-group">	
+                        <input id="text"  type="text" class="form-control" onkeypress="checkEnterPress(event)" style="font-family: FontAwesome;"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary" onclick="addTexto()" style="cursor: pointer;"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                        </span>
+                    </div>
+                </div>
+                    
+            </footer>
+        </article>       
+    </body>
+
